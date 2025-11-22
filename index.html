@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <title>Creami Gelato</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <!-- iPhone / PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Creami Gelato">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 1.2rem;
+      background: #020617;
+      color: #e5e7eb;
+    }
+    .app {
+      max-width: 720px;
+      margin: 0 auto 1.5rem;
+      background: radial-gradient(circle at top left, #1d283a 0, #020617 55%);
+      border-radius: 1.2rem;
+      padding: 1.2rem 1.4rem 1.6rem;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.7);
+      border: 1px solid rgba(148,163,184,0.55);
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      margin-bottom: .7rem;
+    }
+    h1 {
+      font-size: 1.4rem;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+    }
+    h1 span.emoji { font-size: 1.4rem; }
+    .tagline {
+      font-size: .78rem;
+      color: #9ca3af;
+      margin-top: .1rem;
+    }
+    .chip {
+      font-size: .75rem;
+      padding: .2rem .55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      color: #e5e7eb;
+      background: rgba(15,23,42,.9);
+      white-space: nowrap;
+    }
+    h2 {
+      font-size: 1.05rem;
+      margin: 1.1rem 0 .45rem;
+      border-bottom: 1px solid rgba(148,163,184,0.35);
+      padding-bottom: .25rem;
+    }
+    p {
+      margin: .25rem 0;
+      font-size: .9rem;
+      color: #cbd5f5;
+    }
+    .small { font-size: .78rem; color: #9ca3af; }
+    label {
+      display: block;
+      font-size: .85rem;
+      margin-bottom: .18rem;
+    }
+    input[type="number"], select {
+      width: 100%;
+      padding: .45rem .55rem;
+      border-radius: .55rem;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.94);
+      color: #e5e7eb;
+      font-size: .9rem;
+    }
+    input[type="range"] {
+      width: 100%;
+      margin: .2rem 0 .5rem;
+    }
+    .field-group { margin-bottom: .7rem; }
+    .pill-row {
+      display: flex;
+      gap: .4rem;
+      flex-wrap: wrap;
+      margin-top: .35rem;
+    }
+    .pill {
+      padding: .18rem .55rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.65);
+      font-size: .75rem;
+      color: #e5e7eb;
+      background: rgba(15,23,42,0.9);
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: .55rem;
+      margin-top: .45rem;
+    }
+    @media (min-width: 620px) {
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    .card {
+      border-radius: .9rem;
+      padding: .65rem .75rem .8rem;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid rgba(148,163,184,0.5);
+      font-size: .85rem;
+    }
+    .card h3 {
+      margin: 0 0 .3rem;
+      font-size: .9rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: .3rem;
+    }
+    .badge {
+      font-size: .7rem;
+      padding: .1rem .4rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.8);
+      color: #e5e7eb;
+    }
+    ul { margin: .25rem 0 .1rem 1.1rem; padding: 0; }
+    ul li { margin-bottom: .1rem; }
+    .highlight { color: #facc15; font-weight: 600; }
+    .footer {
+      margin-top: 1rem;
+      font-size: .75rem;
+      color: #9ca3af;
+      line-height: 1.35;
+    }
+    .step { margin-bottom: .2rem; }
+    .flavor-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .35rem;
+      margin: .35rem 0 .1rem;
+    }
+    .flavor-btn {
+      padding: .25rem .6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.7);
+      background: rgba(15,23,42,0.9);
+      font-size: .8rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .flavor-btn.active {
+      background: linear-gradient(135deg, #22c55e, #a855f7);
+      border-color: transparent;
+      color: #0f172a;
+      font-weight: 600;
+    }
+    .mixins-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .25rem .75rem;
+      margin-top: .35rem;
+    }
+    .mix-item {
+      display: flex;
+      align-items: center;
+      gap: .35rem;
+      font-size: .8rem;
+    }
+    .mix-item input {
+      accent-color: #22c55e;
+      width: 1rem;
+      height: 1rem;
+    }
+    .mix-note {
+      font-size: .75rem;
+      color: #9ca3af;
+      margin-top: .25rem;
+    }
+    .inline-chip {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.6);
+      padding: .08rem .35rem;
+      font-size: .7rem;
+      margin-left: .2rem;
+      color: #e5e7eb;
+    }
+    .summary-box {
+      margin-top: .4rem;
+      padding: .45rem .55rem;
+      border-radius: .75rem;
+      background: rgba(15,23,42,0.96);
+      border: 1px dashed rgba(148,163,184,0.7);
+      font-size: .8rem;
+    }
+    .summary-line { margin-bottom: .15rem; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div>
+        <h1><span class="emoji">🍨</span><span>Creami Gelato</span></h1>
+        <div class="tagline">Svenska proportioner · 10&nbsp;% fett gelato · anpassad för Ninja Creami Deluxe</div>
+      </div>
+      <div class="chip">Offline PWA · Lägg till på hemskärmen</div>
+    </header>
+
+    <p class="small">
+      Baserad på originalvideons förhållande (~61&nbsp;% mjölkbas / 39&nbsp;% sötad kondenserad mjölk, ca 10&nbsp;% fett)
+      med svenska burkar (397&nbsp;g) och svensk grädde/mjölk.
+    </p>
+
+    <h2>1. Välj mängd bas</h2>
+    <div class="field-group">
+      <label for="cans">Antal burkar sötad kondenserad mjölk (397&nbsp;g/burk)</label>
+      <input id="cans" type="range" min="1" max="3" step="1" value="2" oninput="updateAll()">
+      <div class="pill-row">
+        <div class="pill">Val: <span id="cansLabel" class="highlight">2 burkar</span></div>
+        <div class="pill">Nestlé / Garant / Eldorado (397&nbsp;g/burk)</div>
+      </div>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <h3>
+          Batchöversikt
+          <span class="badge">Bas + burkar</span>
+        </h3>
+        <p>Total glassmix: <span id="totalMix" class="highlight">–</span> g</p>
+        <p>Kondenserad mjölk: <span id="condensed" class="highlight">–</span> g</p>
+        <p>Mjölkbas totalt: <span id="milkBase" class="highlight">–</span> g</p>
+        <p>Rek. Deluxe-burkar: <span id="jars" class="highlight">–</span> st</p>
+        <p>Ca mängd per burk: <span id="perJar" class="highlight">–</span> g</p>
+      </div>
+
+      <div class="card">
+        <h3>
+          Mjölkbas (10&nbsp;% fett)
+          <span class="badge">Grädde + mjölk</span>
+        </h3>
+        <ul>
+          <li>Vispgrädde 36&nbsp;%: <span id="creamG" class="highlight">–</span> g (~<span id="creamDl">–</span> dl)</li>
+          <li>Standardmjölk 3&nbsp;%: <span id="milkG" class="highlight">–</span> g (~<span id="milkDl">–</span> dl)</li>
+        </ul>
+        <p class="small">Rör ihop hela satsen i en bunke och väg sedan upp per burk.</p>
+      </div>
+
+      <div class="card">
+        <h3>
+          Glukossirap / invertsocker
+          <span class="badge">Textur</span>
+        </h3>
+        <ul>
+          <li>Totalt: <span id="glucoseG" class="highlight">–</span> g</li>
+          <li>≈ <span id="glucoseTbsp" class="highlight">–</span> msk (avrundat)</li>
+        </ul>
+        <p class="small">
+          Använd t.ex. SOSA glukossirap 38&nbsp;DE eller Dansukker glukossirap. Ca 3,3&nbsp;% av totalvikten.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>
+          Basextrakt (alkohol)
+          <span class="badge">Grundsmak</span>
+        </h3>
+        <ul>
+          <li>Totalt: <span id="extractTotal" class="highlight">–</span> tsk</li>
+          <li>Per burk: <span id="extractPerJar" class="highlight">–</span> tsk</li>
+        </ul>
+        <p class="small">
+          T.ex. Dr. Oetker (vanilj, citron, pepparmint) eller Strands (päron, hasselnöt, rom, kola).
+        </p>
+      </div>
+    </div>
+
+    <h2>2. Snabbval för smak</h2>
+    <p class="small">Tryck på en smak för att få förslag på extrakt och mix-ins per burk.</p>
+    <div class="flavor-row">
+      <button class="flavor-btn" data-flavor="neutral" onclick="applyFlavorPreset('neutral', this)">Bas</button>
+      <button class="flavor-btn" data-flavor="vanilj" onclick="applyFlavorPreset('vanilj', this)">Vanilj</button>
+      <button class="flavor-btn" data-flavor="jordgubb" onclick="applyFlavorPreset('jordgubb', this)">Jordgubb</button>
+      <button class="flavor-btn" data-flavor="choklad" onclick="applyFlavorPreset('choklad', this)">Choklad</button>
+      <button class="flavor-btn" data-flavor="polka" onclick="applyFlavorPreset('polka', this)">Polka</button>
+      <button class="flavor-btn" data-flavor="romrussin" onclick="applyFlavorPreset('romrussin', this)">Romrussin</button>
+      <button class="flavor-btn" data-flavor="lime" onclick="applyFlavorPreset('lime', this)">Lime</button>
+      <button class="flavor-btn" data-flavor="saltkaramell" onclick="applyFlavorPreset('saltkaramell', this)">Salt karamell</button>
+    </div>
+
+    <div class="card" style="margin-top:.6rem;">
+      <h3>
+        Smaksättning & mix-ins
+        <span class="badge">Per Deluxe-burk</span>
+      </h3>
+
+      <div class="field-group">
+        <label for="flavorSelect">Smakprofil</label>
+        <select id="flavorSelect" onchange="updateFlavorSummary()">
+          <option value="neutral">– Neutral bas (ingen extra smak) –</option>
+          <option value="vanilj">Vanilj</option>
+          <option value="jordgubb">Jordgubb</option>
+          <option value="choklad">Choklad</option>
+          <option value="polka">Polka (mint + polkagris)</option>
+          <option value="romrussin">Romrussin</option>
+          <option value="lime">Lime</option>
+          <option value="saltkaramell">Salt karamell</option>
+        </select>
+      </div>
+
+      <div class="field-group small">
+        <label>Mix-ins (väljs per burk innan Mix-In-läget)</label>
+        <div class="mixins-grid">
+          <label class="mix-item">
+            <input type="checkbox" value="russin" onchange="updateFlavorSummary()">
+            <span>Russin<span class="inline-chip">20 g</span></span>
+          </label>
+          <label class="mix-item">
+            <input type="checkbox" value="morkchoklad" onchange="updateFlavorSummary()">
+            <span>Mörk choklad 60–70&nbsp;%<span class="inline-chip">20–25 g</span></span>
+          </label>
+          <label class="mix-item">
+            <input type="checkbox" value="vitchoklad" onchange="updateFlavorSummary()">
+            <span>Vit choklad<span class="inline-chip">20 g</span></span>
+          </label>
+          <label class="mix-item">
+            <input type="checkbox" value="polka" onchange="updateFlavorSummary()">
+            <span>Polkagris kross<span class="inline-chip">15–20 g</span></span>
+          </label>
+          <label class="mix-item">
+            <input type="checkbox" value="pepparkaka" onchange="updateFlavorSummary()">
+            <span>Pepparkaka / digestive<span class="inline-chip">15–20 g</span></span>
+          </label>
+          <label class="mix-item">
+            <input type="checkbox" value="daim" onchange="updateFlavorSummary()">
+            <span>Daim / liknande<span class="inline-chip">20 g</span></span>
+          </label>
+        </div>
+        <div class="mix-note">
+          Rekommenderade mängder är <span class="highlight">per burk</span>. Hacka allt i små bitar innan Mix-In.
+        </div>
+      </div>
+
+      <div class="summary-box" id="flavorSummaryBox">
+        <div class="summary-line"><strong>Vald smak:</strong> <span id="summaryFlavor">Neutral bas</span></div>
+        <div class="summary-line"><strong>Förslag extrakt per burk:</strong> <span id="summaryExtract">0,5–0,75 tsk vaniljextrakt (om du vill ha smak på basen)</span></div>
+        <div class="summary-line"><strong>Mix-ins per burk:</strong> <span id="summaryMixins">Inga valda – kör ren bas eller välj tillbehör ovan.</span></div>
+        <div class="summary-line small" id="summaryTips"></div>
+      </div>
+    </div>
+
+    <h2>3. Arbetsgång</h2>
+    <div class="step small">1. Ställ slidern på antal burkar kondenserad mjölk du vill använda (1–3).</div>
+    <div class="step small">2. Väg upp grädde, mjölk, glukossirap och kondenserad mjölk enligt siffrorna ovan.</div>
+    <div class="step small">3. Rör ihop allt till en helt slät bas. Tillsätt basextrakt (t.ex. vanilj) för hela satsen.</div>
+    <div class="step small">4. Väg upp basen i dina Ninja Creami Deluxe-behållare enligt “g per burk”. Frys minst 8 timmar.</div>
+    <div class="step small">5. När du ska köra en burk: välj smak & mix-ins i appen som stöd, kör Gelato → skapa hål → häll i mix-ins → kör Mix-In.</div>
+
+    <div class="footer">
+      <strong>iPhone:</strong> När denna sida körs från en HTTPS-domän kan du lägga till den på hemskärmen. Service workern gör den
+      sedan fullt offline.<br>
+      Beräkningar: fetthalt ~10&nbsp;%, glukossirap ~3,3&nbsp;% av totalvikt, extrakt ~0,5 tsk per 450&nbsp;g bas.
+    </div>
+  </div>
+
+  <script>
+    const MIXIN_LABELS = {
+      russin: "Russin ca 20 g (blötlägg gärna i rom/juice)",
+      morkchoklad: "Mörk choklad 60–70 % ca 20–25 g",
+      vitchoklad: "Vit choklad ca 20 g",
+      polka: "Polkagris kross ca 15–20 g",
+      pepparkaka: "Pepparkaka/digestive ca 15–20 g",
+      daim: "Daim eller liknande ca 20 g"
+    };
+
+    const FLAVORS = {
+      neutral: {
+        name: "Neutral bas",
+        extract: "0,5–0,75 tsk vaniljextrakt per burk (valfritt, annars ingen smak).",
+        tips: "Bra utgångspunkt om du vill låta mix-insen styra smaken helt."
+      },
+      vanilj: {
+        name: "Vanilj",
+        extract: "0,75 tsk vaniljextrakt per burk (Taylor & Colledge / Dr. Oetker).",
+        tips: "Klassisk bas som funkar med alla mix-ins: choklad, pepparkaka, daim, bär."
+      },
+      jordgubb: {
+        name: "Jordgubb",
+        extract: "0,5 tsk vaniljextrakt + 40–60 g jordgubbspuré per burk (blanda i basen innan frys).",
+        tips: "Använd gärna frysta jordgubbar mixade med lite socker och citron. Håll igen på extra socker – basen är redan söt."
+      },
+      choklad: {
+        name: "Choklad",
+        extract: "1–1,5 msk kakao + 0,5 tsk vaniljextrakt per burk (kakao i hela satsen innan frys).",
+        tips: "Sikta kakaon så den inte klumpar sig. Kombinera gärna med mörk choklad som mix-in."
+      },
+      polka: {
+        name: "Polka",
+        extract: "0,25–0,5 tsk pepparmintsextrakt per burk (väldigt koncentrerat!).",
+        tips: "Lägg krossad polkagris som mix-in, 15–20 g per burk. Börja försiktigt med mintmängden."
+      },
+      romrussin: {
+        name: "Romrussin",
+        extract: "0,5 tsk romessens per burk + blötlagda russin som mix-in.",
+        tips: "Låt russinen ligga minst 1–2 timmar i rom/romessens + lite vatten. Häll av överflödig vätska innan mix-in."
+      },
+      lime: {
+        name: "Lime",
+        extract: "0,5 tsk lime/citronextrakt per burk + lite finrivet limeskal (utan vita hinnor).",
+        tips: "Passar bra med vit choklad som mix-in. Var försiktig med syra – basen är mjölkig, inte sorbet."
+      },
+      saltkaramell: {
+        name: "Salt karamell",
+        extract: "0,75 tsk kola/karamellessens per burk + 1–2 nypor flingsalt per burk.",
+        tips: "Toppa med fudgebitar eller choklad som mix-in. Smaka av sältan – hellre lite för lite än för mycket."
+      }
+    };
+
+    function round(v, decimals = 0) {
+      const m = Math.pow(10, decimals);
+      return Math.round(v * m) / m;
+    }
+
+    function updateAll() {
+      const cans = parseInt(document.getElementById('cans').value, 10);
+      document.getElementById('cansLabel').textContent = cans + (cans === 1 ? " burk" : " burkar");
+
+      const condensedPerCan = 397;
+      const condensed = condensedPerCan * cans;
+
+      const condensedFraction = 350 / 900;
+      const totalMix = condensed / condensedFraction;
+      const milkBase = totalMix - condensed;
+
+      const cream = milkBase * (0.07 / 0.33);
+      const milk = milkBase - cream;
+
+      const glucose = totalMix * (30 / 900);
+      const glucoseTbsp = glucose / 15;
+
+      const extractTotal = (0.5 * totalMix) / 450;
+
+      const recommendedPerJar = 680;
+      let jars = Math.round(totalMix / recommendedPerJar);
+      if (jars < 1) jars = 1;
+
+      const perJar = totalMix / jars;
+      const extractPerJar = extractTotal / jars;
+
+      document.getElementById('totalMix').textContent = round(totalMix);
+      document.getElementById('condensed').textContent = round(condensed);
+      document.getElementById('milkBase').textContent = round(milkBase);
+      document.getElementById('jars').textContent = jars;
+      document.getElementById('perJar').textContent = round(perJar);
+
+      document.getElementById('creamG').textContent = round(cream);
+      document.getElementById('milkG').textContent = round(milk);
+      document.getElementById('creamDl').textContent = round(cream / 100, 2);
+      document.getElementById('milkDl').textContent = round(milk / 100, 2);
+
+      document.getElementById('glucoseG').textContent = round(glucose);
+      document.getElementById('glucoseTbsp').textContent = round(glucoseTbsp, 1);
+
+      document.getElementById('extractTotal').textContent = round(extractTotal, 2);
+      document.getElementById('extractPerJar').textContent = round(extractPerJar, 2);
+
+      updateFlavorSummary();
+    }
+
+    function applyFlavorPreset(key, btn) {
+      document.querySelectorAll('.flavor-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      const select = document.getElementById('flavorSelect');
+      select.value = key;
+
+      const checkboxes = document.querySelectorAll('.mix-item input[type="checkbox"]');
+      checkboxes.forEach(cb => cb.checked = false);
+
+      if (key === 'polka') {
+        document.querySelector('input[value="polka"]').checked = true;
+      } else if (key === 'choklad') {
+        document.querySelector('input[value="morkchoklad"]').checked = true;
+      } else if (key === 'romrussin') {
+        document.querySelector('input[value="russin"]').checked = true;
+      } else if (key === 'saltkaramell') {
+        document.querySelector('input[value="daim"]').checked = true;
+      } else if (key === 'lime') {
+        document.querySelector('input[value="vitchoklad"]').checked = true;
+      }
+
+      updateFlavorSummary();
+    }
+
+    function updateFlavorSummary() {
+      const select = document.getElementById('flavorSelect');
+      const flavorKey = select.value;
+      const data = FLAVORS[flavorKey] || FLAVORS['neutral'];
+
+      document.getElementById('summaryFlavor').textContent = data.name;
+      document.getElementById('summaryExtract').textContent = data.extract;
+      document.getElementById('summaryTips').textContent = data.tips;
+
+      const checked = Array.from(document.querySelectorAll('.mix-item input[type="checkbox"]:checked'))
+        .map(cb => MIXIN_LABELS[cb.value]);
+
+      const mixinsText = checked.length
+        ? checked.join(" · ")
+        : "Inga valda – kör ren bas eller välj tillbehör ovan.";
+
+      document.getElementById('summaryMixins').textContent = mixinsText;
+    }
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js').catch(err => {
+          console.error('SW registration failed', err);
+        });
+      });
+    }
+
+    updateAll();
+  </script>
+</body>
+</html>
