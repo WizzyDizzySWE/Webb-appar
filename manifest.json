@@ -1,15 +1,20 @@
 {
   "name": "Creami Gelato",
-  "short_name": "Creami Gelato",
-  "start_url": ".",
+  "short_name": "Creami",
+  "description": "Snabb glass- och gelato-generator för Ninja Creami Deluxe.",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#020617",
-  "theme_color": "#020617",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "orientation": "portrait",
+  "scope": "./",
+  "id": "se.wizzdizzy.creami.app",
   "icons": [
     {
       "src": "apple-touch-icon.png",
       "sizes": "180x180",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     }
   ]
 }
